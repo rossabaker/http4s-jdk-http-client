@@ -109,8 +109,8 @@ lazy val releaseSettings = {
         "git@github.com:http4s/http4s-jdk-http-client.git"
       )
     ),
-    homepage := Some(url("https://github.com/http4s/http4s-jdk-http-client")),
-    licenses := List("Apache-2.0" -> url("https://github.com/http4s/http4s-jdk-http-client/LICENSE")),
+    homepage := Some(url("https://http4s.github.io/http4s-jdk-http-client")),
+    licenses := List("Apache-2.0" -> url("https://http4s.github.io/http4s-jdk-http-client/license.html")),
     publishMavenStyle := true,
     pomIncludeRepository := { _ =>
       false
