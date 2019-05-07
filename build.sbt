@@ -9,7 +9,7 @@ lazy val core = project.in(file("core"))
   )
 
 lazy val docs = project.in(file("docs"))
-  .enablePlugins(MdocPlugin, ParadoxMaterialThemePlugin, ParadoxSitePlugin)
+  .enablePlugins(GhpagesPlugin, GitPlugin, MdocPlugin, ParadoxMaterialThemePlugin, ParadoxSitePlugin)
   .dependsOn(core)
   .settings(commonSettings, skipOnPublishSettings, docsSettings)
 
@@ -36,6 +36,8 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.12.8",
   crossScalaVersions := Seq("2.11.12", scalaVersion.value),
   scalacOptions += "-Yrangepos",
+
+  git.remoteRepo := "git@github.com:http4s/http4s-jdk-http-client.git",
 
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
@@ -208,16 +210,18 @@ lazy val docsSettings = {
         uri("https://github.com/http4s/"),
         uri("https://twitter.com/http4s"),
       )
+    },
+    Paradox / siteSubdirName := docVersion(version.value),
+
+    ghpagesBranch := "netlify",
+    includeFilter in ghpagesCleanSite := new FileFilter {
+      val Prefix = (ghpagesRepository.value / docVersion(version.value))
+      def accept(f: File) = f match {
+        case null => false
+        case Prefix => true
+        case _ => accept(f.getParentFile)
+      }
     }
-    // libraryDependencies += "com.47deg" %% "github4s" % "0.20.1",
-    // micrositePushSiteWith := GitHub4s,
-    // micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
-    // micrositeExtraMdFiles := Map(
-    //     file("CHANGELOG.md")        -> ExtraMdFileConfig("changelog.md", "page", Map("title" -> "changelog", "section" -> "changelog", "position" -> "100")),
-    //     file("CODE_OF_CONDUCT.md")  -> ExtraMdFileConfig("code-of-conduct.md",   "page", Map("title" -> "code of conduct",   "section" -> "code of conduct",   "position" -> "101")),
-    //     file("LICENSE")             -> ExtraMdFileConfig("license.md",   "page", Map("title" -> "license",   "section" -> "license",   "position" -> "102"))
-    // ),
-    // micrositeGitterChannelUrl := "http4s/http4s",
   )
 }
 
@@ -246,3 +250,10 @@ def formatCrossScalaVersions(crossScalaVersions: List[String]): String = {
   }
   go(crossScalaVersions.map(CrossVersion.binaryScalaVersion))
 }
+
+def docVersion(version: String) = 
+  version match {
+    case VersionNumber(_, Seq(tags), _) if tags.contains("SNAPSHOT") => "latest"
+    case _ => version
+  }
+
