@@ -201,9 +201,13 @@ lazy val docsSettings = {
 
     sourceDirectory in Paradox := mdocOut.value,
     makeSite := makeSite.dependsOn(mdoc.toTask("")).value,
-    Paradox / paradoxMaterialTheme ~= {
-      _.withRepository(uri("https://github.com/http4s/http4s-jdk-http-client"))
-       .withLogoUri(uri("https://http4s.org/images/http4s-logo.svg"))
+    Paradox / paradoxMaterialTheme ~= { _
+      .withRepository(uri("https://github.com/http4s/http4s-jdk-http-client"))
+      .withLogoUri(uri("https://http4s.org/images/http4s-logo.svg"))
+      .withSocial(
+        uri("https://github.com/http4s/"),
+        uri("https://twitter.com/http4s"),
+      )
     }
     // libraryDependencies += "com.47deg" %% "github4s" % "0.20.1",
     // micrositePushSiteWith := GitHub4s,
