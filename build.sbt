@@ -207,13 +207,14 @@ lazy val docsSettings = {
       .withRepository(uri("https://github.com/http4s/http4s-jdk-http-client"))
       .withLogoUri(uri("https://http4s.org/images/http4s-logo.svg"))
       .withSocial(
-        uri("https://github.com/http4s/"),
+        uri("https://github.com/http4s/http4s-jdk-http-client"),
         uri("https://twitter.com/http4s"),
       )
     },
+    Paradox / paradoxProperties ++= Map(
+      "include.build.base_dir" -> (baseDirectory in ThisBuild).value.getAbsolutePath,
+    ),
     Paradox / siteSubdirName := docVersion(version.value),
-
-    ghpagesBranch := "netlify",
     includeFilter in ghpagesCleanSite := new FileFilter {
       val Prefix = (ghpagesRepository.value / docVersion(version.value))
       def accept(f: File) = f match {
